@@ -24,31 +24,21 @@ async function authenticate() {
   return auth;
 }
 
-// Route to handle form submission
-app.post('/submit', async (req, res) => {
-  const { name, idea, link } = req.body;
-
+// Route to get sheet data
+app.get('/api/sheet-data', async (req, res) => {
   try {
     const auth = await authenticate();
     const sheets = google.sheets({ version: 'v4', auth });
 
-    const values = [[name, idea, link]];
-    const resource = {
-      values,
-    };
-
-    const result = await sheets.spreadsheets.values.append({
+    const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: RANGE,
-      valueInputOption: 'RAW',
-      resource,
     });
 
-    console.log(`${result.data.updates.updatedCells} cells appended.`);
-    res.send('Gift idea submitted anonymously!');
+    res.json(response.data.values);
   } catch (error) {
-    console.error('Error appending to sheet:', error);
-    res.status(500).send('Error submitting gift idea.');
+    console.error('Error reading sheet:', error);
+    res.status(500).json({ error: 'Error loading data' });
   }
 });
 
