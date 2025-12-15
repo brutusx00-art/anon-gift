@@ -7,9 +7,31 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 0 auto;
+      margin: 0;
+      padding: 0;
+      background-image: url('background.jpg'); /* Replace with your background image file */
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
       padding: 20px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
     }
     form {
       display: flex;
@@ -17,37 +39,72 @@
     }
     label {
       margin-top: 10px;
+      color: white;
     }
     input, textarea {
       padding: 8px;
       margin-top: 5px;
+      border: none;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+    input::placeholder, textarea::placeholder {
+      color: rgba(255, 255, 255, 0.7);
     }
     button {
       margin-top: 20px;
       padding: 10px;
-      background-color: #4CAF50;
+      background-color: rgba(76, 175, 80, 0.8);
       color: white;
       border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #45a049;
+      background-color: rgba(69, 160, 73, 0.9);
     }
   </style>
 </head>
 <body>
-  <h1>Leave an Anonymous Gift Idea</h1>
-  <form action="/submit" method="POST">
-    <label for="name">Name of the person to gift:</label>
-    <input type="text" id="name" name="name" required>
+  <div class="glassmorphism">
+    <div id="countdown" style="text-align: center; color: white; font-size: 24px; margin-bottom: 20px;"></div>
+    <h1>Leave an Anonymous Gift Idea</h1>
+    <form action="/submit" method="POST">
+      <label for="name">Name of the person to gift:</label>
+      <input type="text" id="name" name="name" required>
 
-    <label for="idea">Gift idea:</label>
-    <textarea id="idea" name="idea" required></textarea>
+      <label for="idea">Gift idea:</label>
+      <textarea id="idea" name="idea" required></textarea>
 
-    <label for="link">Link to the gift's product page:</label>
-    <input type="url" id="link" name="link" required>
+      <label for="link">Link to the gift's product page:</label>
+      <input type="url" id="link" name="link" required>
 
-    <button type="submit">Submit Anonymously</button>
-  </form>
+      <button type="submit">Submit Anonymously</button>
+    </form>
+  </div>
+
+  <script>
+    function updateCountdown() {
+      const now = new Date();
+      const christmas = new Date('December 25, 2025 00:00:00');
+      const diff = christmas - now;
+
+      if (diff <= 0) {
+        document.getElementById('countdown').innerHTML = 'Merry Christmas!';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s until Christmas!`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
 </body>
 </html>
