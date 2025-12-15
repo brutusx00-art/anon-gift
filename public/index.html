@@ -101,6 +101,9 @@
     </form>
   </div>
 
+  <button id="peekButton" style="margin-top: 20px; padding: 10px 20px; background-color: #228b22; color: white; border: 2px solid #ffffff; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;">No Peeking</button>
+  <div id="sheetData" style="margin-top: 20px; display: none; background: rgba(255, 255, 255, 0.2); padding: 10px; border-radius: 10px; max-width: 400px;"></div>
+
   <script>
     function updateCountdown() {
       const now = new Date();
@@ -122,6 +125,27 @@
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    document.getElementById('peekButton').addEventListener('click', async () => {
+      const url = 'https://docs.google.com/spreadsheets/d/1k4Gr-hXN987zD5NqgmP1JVrIAKt2DGr1KDZq59Kuw5s/export?format=csv&gid=0';
+      try {
+        const response = await fetch(url);
+        const csv = await response.text();
+        const rows = csv.split('\n').map(row => row.split(','));
+        const dataDiv = document.getElementById('sheetData');
+        dataDiv.innerHTML = '<h3 style="color: #ffd700;">Anonymous Gift Ideas:</h3>';
+        rows.slice(1).forEach(row => { // Skip header
+          if (row.length >= 3) {
+            dataDiv.innerHTML += `<p><strong>${row[0]}</strong>: ${row[1]} <a href="${row[2]}" target="_blank" style="color: #dc143c;">Link</a></p>`;
+          }
+        });
+        dataDiv.style.display = 'block';
+      } catch (error) {
+        console.error('Error fetching sheet data:', error);
+        document.getElementById('sheetData').innerHTML = '<p style="color: red;">Error loading data.</p>';
+        document.getElementById('sheetData').style.display = 'block';
+      }
+    });
   </script>
 </body>
 </html>
