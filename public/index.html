@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anonymous Gift Ideas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-top: 10px;
+    }
+    input, textarea {
+      padding: 8px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Leave an Anonymous Gift Idea</h1>
+  <form action="/submit" method="POST">
+    <label for="name">Name of the person to gift:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="idea">Gift idea:</label>
+    <textarea id="idea" name="idea" required></textarea>
+
+    <label for="link">Link to the gift's product page:</label>
+    <input type="url" id="link" name="link" required>
+
+    <button type="submit">Submit Anonymously</button>
+  </form>
+</body>
+</html>
