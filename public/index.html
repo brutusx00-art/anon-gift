@@ -99,6 +99,7 @@
 
       <button type="submit">Submit Anonymously</button>
     </form>
+    <div id="message" style="margin-top: 10px; color: #ffd700; font-weight: bold;"></div>
   </div>
 
   <button id="peekButton" style="margin-top: 20px; padding: 10px 20px; background-color: #228b22; color: white; border: 2px solid #ffffff; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;">No Peeking</button>
@@ -145,6 +146,21 @@
         console.error('Error fetching sheet data:', error);
         document.getElementById('sheetData').innerHTML = '<p style="color: red;">Error loading data.</p>';
         document.getElementById('sheetData').style.display = 'block';
+      }
+    });
+
+    document.querySelector('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      try {
+        const response = await fetch('/submit', {
+          method: 'POST',
+          body: new URLSearchParams(formData)
+        });
+        const result = await response.text();
+        document.getElementById('message').innerHTML = result;
+      } catch (error) {
+        document.getElementById('message').innerHTML = 'Error submitting.';
       }
     });
   </script>
