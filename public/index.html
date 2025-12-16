@@ -127,7 +127,7 @@
     setInterval(updateCountdown, 1000);
 
     document.getElementById('peekButton').addEventListener('click', async () => {
-      const url = 'https://docs.google.com/spreadsheets/d/1k4Gr-hXN987zD5NqgmP1JVrIAKt2DGr1KDZq59Kuw5s/export?format=csv&gid=0';
+      const url = '/api/sheet-data';
       try {
         const response = await fetch(url);
         const csv = await response.text();

@@ -52,6 +52,18 @@ app.post('/submit', async (req, res) => {
   }
 });
 
+// Route to fetch sheet data
+app.get('/api/sheet-data', async (req, res) => {
+  try {
+    const response = await fetch('https://docs.google.com/spreadsheets/d/1k4Gr-hXN987zD5NqgmP1JVrIAKt2DGr1KDZq59Kuw5s/export?format=csv&gid=0');
+    const csv = await response.text();
+    res.send(csv);
+  } catch (error) {
+    console.error('Error fetching sheet data:', error);
+    res.status(500).send('Error fetching data');
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
