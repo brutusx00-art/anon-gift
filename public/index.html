@@ -99,10 +99,9 @@
 
       <button type="submit">Submit Anonymously</button>
     </form>
-    <div id="message" style="margin-top: 10px; color: #ffd700; font-weight: bold;"></div>
   </div>
 
-  <button id="peekButton" style="margin-top: 20px; padding: 10px 20px; background-color: #228b22; color: white; border: 2px solid #ffffff; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;">No Peeking</button>
+  <button id="peekButton" style="margin-top: 20px; padding: 10px 20px; background-color: #dc143c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">No Peeking</button>
   <div id="sheetData" style="margin-top: 20px; display: none; background: rgba(255, 255, 255, 0.2); padding: 10px; border-radius: 10px; max-width: 400px;"></div>
 
   <script>
@@ -128,15 +127,14 @@
     setInterval(updateCountdown, 1000);
 
     document.getElementById('peekButton').addEventListener('click', async () => {
+      const url = 'https://docs.google.com/spreadsheets/d/1k4Gr-hXN987zD5NqgmP1JVrIAKt2DGr1KDZq59Kuw5s/export?format=csv&gid=0';
       try {
-        const response = await fetch('/api/sheet-data');
-        const data = await response.json();
-        if (data.error) {
-          throw new Error(data.error);
-        }
+        const response = await fetch(url);
+        const csv = await response.text();
+        const rows = csv.split('\n').map(row => row.split(','));
         const dataDiv = document.getElementById('sheetData');
         dataDiv.innerHTML = '<h3 style="color: #ffd700;">Anonymous Gift Ideas:</h3>';
-        data.slice(1).forEach(row => { // Skip header
+        rows.slice(1).forEach(row => { // Skip header
           if (row.length >= 3) {
             dataDiv.innerHTML += `<p><strong>${row[0]}</strong>: ${row[1]} <a href="${row[2]}" target="_blank" style="color: #dc143c;">Link</a></p>`;
           }
@@ -146,21 +144,6 @@
         console.error('Error fetching sheet data:', error);
         document.getElementById('sheetData').innerHTML = '<p style="color: red;">Error loading data.</p>';
         document.getElementById('sheetData').style.display = 'block';
-      }
-    });
-
-    document.querySelector('form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      try {
-        const response = await fetch('/submit', {
-          method: 'POST',
-          body: new URLSearchParams(formData)
-        });
-        const result = await response.text();
-        document.getElementById('message').innerHTML = result;
-      } catch (error) {
-        document.getElementById('message').innerHTML = 'Error submitting.';
       }
     });
   </script>

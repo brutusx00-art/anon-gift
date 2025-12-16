@@ -24,24 +24,6 @@ async function authenticate() {
   return auth;
 }
 
-// Route to get sheet data
-app.get('/api/sheet-data', async (req, res) => {
-  try {
-    const auth = await authenticate();
-    const sheets = google.sheets({ version: 'v4', auth });
-
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: RANGE,
-    });
-
-    res.json(response.data.values);
-  } catch (error) {
-    console.error('Error reading sheet:', error);
-    res.status(500).json({ error: 'Error loading data' });
-  }
-});
-
 // Route to handle form submission
 app.post('/submit', async (req, res) => {
   const { name, idea, link } = req.body;
