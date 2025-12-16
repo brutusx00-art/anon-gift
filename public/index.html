@@ -89,14 +89,13 @@
       <h1>Leave an Anonymous Gift Idea</h1>
       <form action="/submit" method="POST">
         <label for="name">Name of the person to gift:</label>
-        <input type="text" id="name" name="name" required>
+      <input type="text" id="name" name="name" placeholder="e.g. Kyle jr." required>
 
-        <label for="idea">Gift idea:</label>
-        <textarea id="idea" name="idea" required></textarea>
+      <label for="idea">Gift idea:</label>
+      <textarea id="idea" name="idea" placeholder="e.g. 35-inch tires " required></textarea>
 
-        <label for="link">Link to the gift's product page:</label>
-        <input type="url" id="link" name="link" required>
-
+      <label for="link">Link to the gift's product page (optional):</label>
+      <input type="url" id="link" name="link" placeholder="e.g. https://example.com/product">
         <button type="submit">Submit Anonymously</button>
       </form>
     </div>
@@ -140,7 +139,7 @@
         rows.slice(1).forEach((row, index) => { // Skip header, index starts at 0 for first data row
           if (row.length >= 3 && (row[3] !== 'Purchased')) {
             const p = document.createElement('p');
-            p.innerHTML = `<strong>${row[0]}</strong>: ${row[1]} <a href="${row[2]}" target="_blank" style="color: #dc143c;">Link</a>`;
+            p.innerHTML = `<strong>${row[0]}</strong>: ${row[1]}${row[2] ? ` <a href="${row[2]}" target="_blank" style="color: #dc143c;">Link</a>` : ''}`;
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.style.marginLeft = '10px';
