@@ -42,6 +42,34 @@ app.get('/api/sheet-data', async (req, res) => {
   }
 });
 
+// Route to handle form submission
+app.post('/submit', async (req, res) => {
+  const { name, idea, link } = req.body;
+
+  try {
+    const auth = await authenticate();
+    const sheets = google.sheets({ version: 'v4', auth });
+
+    const values = [[name, idea, link]];
+    const resource = {
+      values,
+    };
+
+    const result = await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: RANGE,
+      valueInputOption: 'RAW',
+      resource,
+    });
+
+    console.log(`${result.data.updates.updatedCells} cells appended.`);
+    res.send('Gift idea submitted anonymously!');
+  } catch (error) {
+    console.error('Error appending to sheet:', error);
+    res.status(500).send('Error submitting gift idea.');
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
