@@ -78,31 +78,35 @@
       font-weight: bold;
       transition: background-color 0.3s;
     }
-    button:hover {
-      background-color: #b22222; /* Firebrick */
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
   </style>
 </head>
 <body>
-  <div class="glassmorphism">
-    <div id="countdown" style="text-align: center; color: white; font-size: 24px; margin-bottom: 20px;"></div>
-    <h1>Leave an Anonymous Gift Idea</h1>
-    <form action="/submit" method="POST">
-      <label for="name">Name of the person to gift:</label>
-      <input type="text" id="name" name="name" required>
+  <div class="container">
+    <div class="glassmorphism">
+      <div id="countdown" style="text-align: center; color: white; font-size: 24px; margin-bottom: 20px;"></div>
+      <h1>Leave an Anonymous Gift Idea</h1>
+      <form action="/submit" method="POST">
+        <label for="name">Name of the person to gift:</label>
+        <input type="text" id="name" name="name" required>
 
-      <label for="idea">Gift idea:</label>
-      <textarea id="idea" name="idea" required></textarea>
+        <label for="idea">Gift idea:</label>
+        <textarea id="idea" name="idea" required></textarea>
 
-      <label for="link">Link to the gift's product page:</label>
-      <input type="url" id="link" name="link" required>
+        <label for="link">Link to the gift's product page:</label>
+        <input type="url" id="link" name="link" required>
 
-      <button type="submit">Submit Anonymously</button>
-    </form>
+        <button type="submit">Submit Anonymously</button>
+      </form>
+    </div>
+
+    <button id="peekButton" style="margin-top: 20px; padding: 10px 20px; background-color: #dc143c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">No Peeking</button>
+    <div id="sheetData" style="margin-top: 20px; display: none; background: rgba(255, 255, 255, 0.2); padding: 10px; border-radius: 10px; max-width: 400px;"></div>
   </div>
-
-  <button id="peekButton" style="margin-top: 20px; padding: 10px 20px; background-color: #dc143c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">No Peeking</button>
-  <div id="sheetData" style="margin-top: 20px; display: none; background: rgba(255, 255, 255, 0.2); padding: 10px; border-radius: 10px; max-width: 400px;"></div>
 
   <script>
     function updateCountdown() {
@@ -136,9 +140,34 @@
         }
         const dataDiv = document.getElementById('sheetData');
         dataDiv.innerHTML = '<h3 style="color: #ffd700;">Anonymous Gift Ideas:</h3>';
-        rows.slice(1).forEach(row => { // Skip header
-          if (row.length >= 3) {
-            dataDiv.innerHTML += `<p><strong>${row[0]}</strong>: ${row[1]} <a href="${row[2]}" target="_blank" style="color: #dc143c;">Link</a></p>`;
+        rows.slice(1).forEach((row, index) => { // Skip header, index starts at 0 for first data row
+          if (row.length >= 3 && (row[3] !== 'Purchased')) {
+            const p = document.createElement('p');
+            p.innerHTML = `<strong>${row[0]}</strong>: ${row[1]} <a href="${row[2]}" target="_blank" style="color: #dc143c;">Link</a>`;
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.style.marginLeft = '10px';
+            checkbox.addEventListener('change', async () => {
+              if (checkbox.checked) {
+                try {
+                  await fetch('/api/update-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rowIndex: index, status: 'Purchased' })
+                  });
+                  p.style.display = 'none'; // Hide after marking
+                } catch (error) {
+                  console.error('Error updating status:', error);
+                  checkbox.checked = false; // Uncheck on error
+                }
+              }
+            });
+            p.appendChild(checkbox);
+            const label = document.createElement('label');
+            label.textContent = ' Mark as purchased';
+            label.style.color = '#ffffff';
+            p.appendChild(label);
+            dataDiv.appendChild(p);
           }
         });
         dataDiv.style.display = 'block';
