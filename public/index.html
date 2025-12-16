@@ -130,8 +130,10 @@
       const url = '/api/sheet-data';
       try {
         const response = await fetch(url);
-        const csv = await response.text();
-        const rows = csv.split('\n').map(row => row.split(','));
+        const rows = await response.json();
+        if (rows.error) {
+          throw new Error(rows.error);
+        }
         const dataDiv = document.getElementById('sheetData');
         dataDiv.innerHTML = '<h3 style="color: #ffd700;">Anonymous Gift Ideas:</h3>';
         rows.slice(1).forEach(row => { // Skip header

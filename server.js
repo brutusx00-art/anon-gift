@@ -55,12 +55,16 @@ app.post('/submit', async (req, res) => {
 // Route to fetch sheet data
 app.get('/api/sheet-data', async (req, res) => {
   try {
-    const response = await fetch('https://docs.google.com/spreadsheets/d/1k4Gr-hXN987zD5NqgmP1JVrIAKt2DGr1KDZq59Kuw5s/export?format=csv&gid=0');
-    const csv = await response.text();
-    res.send(csv);
+    const auth = await authenticate();
+    const sheets = google.sheets({ version: 'v4', auth });
+    const result = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: RANGE,
+    });
+    res.json(result.data.values || []);
   } catch (error) {
     console.error('Error fetching sheet data:', error);
-    res.status(500).send('Error fetching data');
+    res.status(500).json({ error: 'Error fetching data' });
   }
 });
 
